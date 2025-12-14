@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: python:3.7
+From: python:3.9
 
 %post
     # Update and install dependencies
@@ -12,15 +12,19 @@ From: python:3.7
         libbz2-dev \
         liblzma-dev \
         libcurl4-openssl-dev \
-        libssl-dev
+        libssl-dev \
+        samtools \
+        bedtools \
+        htslib 
+        #pysam dependencies
 
     # Install CNVkit and its Python dependencies
-    pip install numpy scipy pandas matplotlib reportlab biopython pyfaidx pysam pyvcf cnvkit==0.9.8
-
+    pip install numpy scipy pandas matplotlib reportlab biopython pyfaidx pysam pyvcf cnvkit==0.9.12
+    
     # Install R and DNAcopy package, if necessary
     apt-get install -y r-base
-    Rscript -e "install.packages('BiocManager', repos='http://cran.rstudio.com/')" \
-       -e "BiocManager::install('DNAcopy')"
+    Rscript -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" && \
+    Rscript -e "BiocManager::install('DNAcopy', ask=FALSE)"
 
 %test
     cnvkit.py version
